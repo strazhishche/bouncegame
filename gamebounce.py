@@ -33,7 +33,7 @@ class Ball:
             self.hit_bottom = True
         if self.hit_paddle(pos) == True:
             self.y *= -1
-            self.x = beat()
+            self.x = self.x + self.paddle.x
             self.bounce()
         if pos[0] <= 0:
             self.x *= -1
@@ -76,43 +76,44 @@ class Paddle:
     def destroy(self):
         self.destroy()
 
-def beat():
-    return ball.x + paddle.x
-
-tk = Tk()
-tk.title("Игра")
-tk.resizable(0, 0)
-tk.wm_attributes("-topmost", 1)
-canvas = Canvas(tk, width=500, height=400, bd=0, highlightthickness=0)
-canvas.pack()
-tk.update()
-maxscore = 0
-
-score = canvas.create_text(45, 20, text="score 0", font=('Courier', 16))
-max = canvas.create_text(58, 40, text="max " + str(maxscore), font=('Courier', 16))
-finish = canvas.create_text(220, 200, text='Game over', font=('Courier', 22), state="hidden")
-
-while True:
-    paddle = Paddle(canvas, 'blue')
-    ball = Ball(canvas, paddle, 'red')
-
-    while ball.hit_bottom == False:
-        ball.draw()
-        paddle.draw()
-        canvas.itemconfig(score,text="score " + str(ball.bounce_count))
-        tk.update_idletasks()
-        tk.update()
-        time.sleep(0.01)
-
-    time.sleep(0.5)
-    canvas.itemconfig(paddle.id, state="hidden")
-    canvas.itemconfig(ball.id, state="hidden")
-    canvas.itemconfig(finish, state="normal")
+def main():
+    tk = Tk()
+    tk.title("Игра")
+    tk.resizable(0, 0)
+    tk.wm_attributes("-topmost", 1)
+    canvas = Canvas(tk, width=500, height=400, bd=0, highlightthickness=0)
+    canvas.pack()
     tk.update()
+    maxscore = 0
 
-    if ball.bounce_count > maxscore:
-        maxscore = ball.bounce_count
-        canvas.itemconfig(max, text="max " + str(maxscore))
+    score = canvas.create_text(45, 20, text="score 0", font=('Courier', 16))
+    max = canvas.create_text(58, 40, text="max " + str(maxscore), font=('Courier', 16))
+    finish = canvas.create_text(220, 200, text='Game over', font=('Courier', 22), state="hidden")
 
-    time.sleep(1)
-    canvas.itemconfig(finish, state="hidden")
+    while True:
+        paddle = Paddle(canvas, 'blue')
+        ball = Ball(canvas, paddle, 'red')
+
+        while ball.hit_bottom == False:
+            ball.draw()
+            paddle.draw()
+            canvas.itemconfig(score,text="score " + str(ball.bounce_count))
+            tk.update_idletasks()
+            tk.update()
+            time.sleep(0.01)
+
+        time.sleep(0.5)
+        canvas.itemconfig(paddle.id, state="hidden")
+        canvas.itemconfig(ball.id, state="hidden")
+        canvas.itemconfig(finish, state="normal")
+        tk.update()
+
+        if ball.bounce_count > maxscore:
+            maxscore = ball.bounce_count
+            canvas.itemconfig(max, text="max " + str(maxscore))
+
+        time.sleep(1)
+        canvas.itemconfig(finish, state="hidden")
+
+if __name__ == "__main__":
+    main()
